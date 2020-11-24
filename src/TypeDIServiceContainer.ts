@@ -18,14 +18,12 @@ export class TypeDIServiceContainer implements ServiceContainer {
         ...this.container.globalInstance.findService(to),
         transient: true,
         id: namespace,
-        global: true,
       });
     } else {
       this.container.set({
         transient: true,
         id: namespace,
         type: to,
-        global: true,
       });
     }
 
@@ -37,13 +35,11 @@ export class TypeDIServiceContainer implements ServiceContainer {
       this.container.set({
         ...this.container.globalInstance.findService(to),
         id: namespace,
-        global: true,
       });
     } else {
       this.container.set({
         id: namespace,
         type: to,
-        global: true,
       });
     }
 

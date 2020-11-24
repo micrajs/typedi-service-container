@@ -100,4 +100,35 @@ describe('TypeDIServiceContainer tests', () => {
 
     expect(container.use('MyClass').token).toBe('my secret token');
   });
+
+  it('should not leak data from a child container to the parent', () => {
+    @Service()
+    class MyClass {
+      @Inject('token')
+      public token!: number;
+    }
+
+    const parent = new TypeDIServiceContainer();
+    parent.singleton('singleton-class', MyClass);
+    const child = parent.clone();
+    child.value('token', 123);
+
+    expect(child.use('singleton-class').token).toBe(child.use('token'));
+    expect(() => parent.use('singleton-class')).toThrow();
+  });
+
+  it('should not leak data from a child container to the parent using a decorator', () => {
+    @Service('singleton-class')
+    class _MyClass {
+      @Inject('token')
+      public token!: number;
+    }
+
+    const parent = new TypeDIServiceContainer();
+    const child = parent.clone();
+    child.value('token', 123);
+
+    expect(child.use('singleton-class').token).toBe(child.use('token'));
+    expect(() => parent.use('singleton-class')).toThrow();
+  });
 });
