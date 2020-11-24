@@ -57,7 +57,7 @@ describe('TypeDIServiceContainer tests', () => {
   it('should return a value based on a singleton registered through a decorator', () => {
     const container = new TypeDIServiceContainer();
     @Service('MyClass')
-    class MyClass {
+    class _MyClass {
       public rand: number = Math.floor(Math.random() * 600000000000) + 1;
     }
 

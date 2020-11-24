@@ -1,6 +1,6 @@
 {
   "index.js": {
-    "bundled": 2041,
+    "bundled": 2032,
     "minified": 1112,
     "gzipped": 372,
     "treeshaked": {
@@ -14,12 +14,12 @@
     }
   },
   "index.cjs.js": {
-    "bundled": 2617,
+    "bundled": 2608,
     "minified": 1560,
     "gzipped": 486
   },
   "index.iife.js": {
-    "bundled": 2854,
+    "bundled": 2845,
     "minified": 1458,
     "gzipped": 474
   }

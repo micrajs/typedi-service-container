@@ -1,23 +1,27 @@
 import { Container } from 'typedi';
+import type { Token } from 'typedi';
 import type { ServiceContainer } from '@micra/core';
 
+/* eslint-disable-next-line @typescript-eslint/ban-types */
+type Namespace = Function | string | Token<any>;
+
 export class TypeDIServiceContainer implements ServiceContainer {
-  public container: Container;
+  public container: Container | any;
 
   constructor(container?: Container) {
     this.container = container ?? Container;
   }
 
-  register(namespace: any, to: any): this {
+  register<T>(namespace: Namespace, to: T): this {
     if (this.has(to)) {
-      (this.container as any).set({
-        ...(this.container as any).globalInstance.findService(to),
+      this.container.set({
+        ...this.container.globalInstance.findService(to),
         transient: true,
         id: namespace,
         global: true,
       });
     } else {
-      (this.container as any).set({
+      this.container.set({
         transient: true,
         id: namespace,
         type: to,
@@ -28,15 +32,15 @@ export class TypeDIServiceContainer implements ServiceContainer {
     return this;
   }
 
-  singleton(namespace: any, to: any): this {
+  singleton<T>(namespace: Namespace, to: T): this {
     if (this.has(to)) {
-      (this.container as any).set({
-        ...(this.container as any).globalInstance.findService(to),
+      this.container.set({
+        ...this.container.globalInstance.findService(to),
         id: namespace,
         global: true,
       });
     } else {
-      (this.container as any).set({
+      this.container.set({
         id: namespace,
         type: to,
         global: true,
@@ -45,8 +49,8 @@ export class TypeDIServiceContainer implements ServiceContainer {
 
     return this;
   }
-  value<T = any>(namespace: any, value: T): this {
-    (this.container as any).set({
+  value<T>(namespace: Namespace, value: T): this {
+    this.container.set({
       id: namespace,
       value,
     });
@@ -54,25 +58,24 @@ export class TypeDIServiceContainer implements ServiceContainer {
     return this;
   }
 
-  factory<T = any>(
-    namespace: string,
+  factory<T>(
+    namespace: Namespace,
     value: (dependencyContainer: TypeDIServiceContainer) => T,
   ): this {
-    const $container = this;
-    (this.container as any).set({
+    this.container.set({
       id: namespace,
-      factory: () => value($container),
+      factory: () => value(this),
     });
 
     return this;
   }
 
-  use<T = any>(namespace: any): T {
-    return (this.container as any).get(namespace);
+  use<T = any>(namespace: Namespace): T {
+    return this.container.get(namespace);
   }
 
-  has(namespace: any): boolean {
-    return (this.container as any).has(namespace);
+  has(namespace: Namespace): boolean {
+    return this.container.has(namespace);
   }
 
   clone(): ServiceContainer {
